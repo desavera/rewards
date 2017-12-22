@@ -12,6 +12,8 @@ libraryDependencies += "com.typesafe.akka" %% "akka-stream" % akkaVersion
 // If testkit used, explicitly declare dependency on akka-streams-testkit in same version as akka-actor
 libraryDependencies += "com.typesafe.akka" %% "akka-http-testkit"   % akkaHttpVersion % Test
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion     % Test
+libraryDependencies += "org.scalatest"  %% "scalatest" % "3.0.1" % Test
+libraryDependencies += "org.scalamock"  %% "scalamock-scalatest-support" % "3.5.0" % Test
 
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "inject", xs @ _*) => MergeStrategy.first

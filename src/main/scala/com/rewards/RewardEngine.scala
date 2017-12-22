@@ -1,14 +1,16 @@
-package rewards
+package com.rewards
 
-import rewards.model._
-
+import com.rewards.model.Entities._
 import scala.collection.immutable.Stack
+import scala.collection.Iterator
+
+
 
 class Dag[T](val root : Node[T])
 
 class Node[T](val parents: List[Node[T]], val children: List[Node[T]], val value : T)
 
-class DagIterator[T](val dag: Dag[T]) extends Iterator {
+class DagIterator[T](val dag: Dag[T]) extends Iterator[T] {
 
   val nodes : Stack[Node[T]] = new Stack[Node[T]]
 
@@ -27,12 +29,9 @@ class DagIterator[T](val dag: Dag[T]) extends Iterator {
 
 object RewardEngine {
 
-  val dag = new DAG[Member]()
+  def calculateRewards(invitations : List[Invitation]): String = {
 
-  def calculateRewards(invitations : List[Invitation]): String {
-
-
-    "TODO"
+    return "TODO"
 
   }
 

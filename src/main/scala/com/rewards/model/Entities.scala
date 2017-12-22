@@ -1,4 +1,4 @@
-package rewards.model
+package com.rewards.model
 
 object Entities {
 

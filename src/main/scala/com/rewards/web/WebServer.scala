@@ -1,4 +1,4 @@
-package rewards.web
+package com.rewards.web
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -7,8 +7,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import scala.io.StdIn
 
-import rewards.RewardsEngine
-import rewards.model.Entities._
+import com.rewards.RewardEngine
+import com.rewards.model.Entities._
 
 object WebServer {
   def main(args: Array[String]) {
@@ -18,16 +18,27 @@ object WebServer {
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
 
-    val route:Route = =
-        get {
-          pathPrefix("filename"/String) { filename =>
-             val invitations : List[Invitation] = readInvitations(filename)
-             val results = RewardsEngine.calculateRewards(invitations)
+    val apiPrefix = "rewards/api"
 
-             complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1> The rewards are : "  + results + " </h1>"))
+    val route:Route = 
+        get {
+          pathPrefix(apiPrefix) {
+
+           path("calc") {
+            parameters('filename) { (filename) =>
+
+              val invitations : List[Invitation] = readInvitations(filename)
+              val results = RewardEngine.calculateRewards(invitations)
+
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1> The rewards are : "  + results + " </h1>"))
+            }
+          } ~ path("health") {
+              complete (StatusCodes.OK)
+          }
+         }
         }
 
-    val bindingFuture = Http().bindAndHandle(route, "10.168.68.141", 8080)
+    val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
     println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
@@ -36,9 +47,9 @@ object WebServer {
       .onComplete(_ => system.terminate()) // and shutdown when done
   }
 
-  def readInvitations(filename : String) : List[Invitation] {
+  def readInvitations(filename : String) : List[Invitation] = {
 
-     val list = "0 1 9 3 0 1"
+     return List(Invitation(0,1),Invitation(0,2),Invitation(1,3))
 
   }
 }
