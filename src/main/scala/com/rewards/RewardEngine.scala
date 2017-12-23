@@ -1,3 +1,10 @@
+/*
+ * Nubank test - Dec 2017
+ *
+ * author : Mário de Sá Vera
+ */
+
+
 package com.rewards
 
 import com.rewards.model.Entities._

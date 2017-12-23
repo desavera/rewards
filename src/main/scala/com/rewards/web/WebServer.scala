@@ -1,3 +1,10 @@
+/*
+ * Nubank test - Dec 2017
+ *
+ * author : Mário de Sá Vera
+ */
+
+
 package com.rewards.web
 
 import akka.actor.ActorSystem
@@ -6,37 +13,64 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import scala.io.StdIn
+import scala.io.Source
+
+
+import akka.http.scaladsl.server._
+import akka.http.scaladsl.model.StatusCodes._
+
+import akka.http.scaladsl.server.directives.MethodDirectives
 
 import com.rewards.RewardEngine
 import com.rewards.model.Entities._
 
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+
 object WebServer {
-  def main(args: Array[String]) {
 
-    implicit val system = ActorSystem("my-rewards")
-    implicit val materializer = ActorMaterializer()
-    // needed for the future flatMap/onComplete in the end
-    implicit val executionContext = system.dispatcher
+  implicit val system = ActorSystem("my-rewards")
+  implicit val materializer = ActorMaterializer()
+  // needed for the future flatMap/onComplete in the end
+  implicit val executionContext = system.dispatcher
 
-    val apiPrefix = "rewards/api"
+  val apiPrefix = "rewards/api"
 
-    val route:Route = 
-        get {
+  val route:Route = 
+
+        post {
           pathPrefix(apiPrefix) {
 
            path("calc") {
             parameters('filename) { (filename) =>
 
-              val invitations : List[Invitation] = readInvitations(filename)
-              val results = RewardEngine.calculateRewards(invitations)
+              try {
 
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1> The rewards are : "  + results + " </h1>"))
+                 val invitations : List[Invitation] = readInvitations(filename)
+                 val results = RewardEngine.calculateRewards(invitations)
+
+                 complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1> The rewards are : "  + results + " </h1>"))
+
+              } catch {
+  
+                 case e:FileNotFoundException => complete("Invalid input... file not found in server local filesystem !")
+             
+              }
             }
-          } ~ path("health") {
-              complete (StatusCodes.OK)
+           }
           }
-         }
+        } 
+
+        get {
+          pathPrefix(apiPrefix) {
+
+           path("health") {
+              complete (StatusCodes.OK)
+           }
+          }
         }
+
+  def main(args: Array[String]) {
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
@@ -47,9 +81,12 @@ object WebServer {
       .onComplete(_ => system.terminate()) // and shutdown when done
   }
 
-  def readInvitations(filename : String) : List[Invitation] = {
+  def readInvitations(fileName : String) : List[Invitation] = {
 
-     return List(Invitation(0,1),Invitation(0,2),Invitation(1,3))
-
+     val buffer = Source.fromFile(fileName)
+     val lines = buffer.getLines.asInstanceOf[List[Invitation]]
+     
+     buffer.close
+     return lines
   }
 }
