@@ -41,7 +41,7 @@ object WebServer {
         post {
           pathPrefix(apiPrefix) {
 
-           path("calc") {
+           path("/calc") {
             parameters('filename) { (filename) =>
 
               try {
@@ -59,12 +59,11 @@ object WebServer {
             }
            }
           }
-        } 
+        } ~ get {
 
-        get {
           pathPrefix(apiPrefix) {
 
-           path("health") {
+           path("/health") {
               complete (StatusCodes.OK)
            }
           }
