@@ -34,4 +34,13 @@ You should deliver a git repository, or a link to a shared private repository on
 
 ## Solution
 
+TBD
 
+## Compiling & Running
+
+
+You will need to install Scala 2.12 !
+
+cd [PROJECT_DIR]
+./sbt assembly
+scala -classpath target/scala-2.12/rewards-api-assembly-0.1.jar com.rewards.web.WebServer
