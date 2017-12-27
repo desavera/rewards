@@ -41,6 +41,6 @@ TBD
 
 You will need to install Scala 2.12 !
 
-cd [PROJECT_DIR]
-./sbt assembly
-scala -classpath target/scala-2.12/rewards-api-assembly-0.1.jar com.rewards.web.WebServer
+### cd [PROJECT_DIR]
+### ./sbt assembly
+### scala -classpath target/scala-2.12/rewards-api-assembly-0.1.jar com.rewards.web.WebServer
