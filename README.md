@@ -34,7 +34,19 @@ You should deliver a git repository, or a link to a shared private repository on
 
 ## Solution
 
-TBD
+### The Algo
+
+As the input is sorted by invitation order and we want a DAG , we should :
+
+1- Create a separate Map (constant O) to hold the nodes that are part of the network and this will be the output structure with a key as the member id and value as the member score.
+2- Build the DAG following the invitation order as the input and adding unique keys to the map from (1).
+3- A member node has a flag indicating an invitation has being made already.
+3- The insert node method checks for NON INVITED nodes first and is a recursive implementation which calculates K (from the problem definition) going backwards as soon as the member is added the K value is (-1) which means NO ADDITION for points in the first backwards iteration which adds +1 to K. The next backwards iteration K=1 as we are in a node that is a parent to a invitee node at least.
+
+## The endpoints
+
+A single endpoint indicating the calculation function trigged pointing to a file located in the server filesystem.
+
 
 ## Compiling & Running
 
