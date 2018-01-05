@@ -34,8 +34,14 @@ class DagIterator[T](val dag: Dag[T]) extends Iterator[T] {
   }
 }
 
+/** the Rewards engine */
 object RewardEngine {
 
+  /** Calculates a reward based on a set with invitations in the "invitee - invited" format.
+   *
+   *  @param invitations the list with invitations
+   *  @return a string with the list of rewards for each invitee
+   */
   def calculateRewards(invitations : List[Invitation]): String = {
 
     return "TODO"
