@@ -10,18 +10,19 @@ package com.rewards.web
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.directives.MethodDirectives
+import akka.http.scaladsl.server._
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.StatusCodes._
+
 import akka.stream.ActorMaterializer
+
 import scala.io.StdIn
 import scala.io.Source
 
 import scala.concurrent.Future
 
-import akka.http.scaladsl.server._
-import akka.http.scaladsl.model.StatusCodes._
-
-import akka.http.scaladsl.server.directives.MethodDirectives
 
 import com.rewards.RewardEngine
 import com.rewards.model.Entities._
@@ -29,7 +30,15 @@ import com.rewards.model.Entities._
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 
+
+
+/** the WebServer for rewards endpoint services */
 object WebServer {
+
+  /*
+   * Constructors/Initializers
+  */
+  val INVALID_INPUT_ERR_MSG = "Invalid input... file not found in server local filesystem !"
 
   implicit val system = ActorSystem("rewards")
   implicit val materializer = ActorMaterializer()
@@ -37,14 +46,16 @@ object WebServer {
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
 
-  val apiPrefix = "rewards/api"
-  var binding:Future[ServerBinding] = null
+  var binding:Future[ServerBinding] = _
+
   val route:Route = 
 
-        post {
-          pathPrefix(apiPrefix) {
-
-           path("/calc") {
+      get {
+        path("health") {
+          complete (StatusCodes.OK)
+        }
+      } ~ post {
+        path("calc") {
             parameters('filename) { (filename) =>
 
               try {
@@ -56,35 +67,38 @@ object WebServer {
 
               } catch {
   
-                 case e:FileNotFoundException => complete("Invalid input... file not found in server local filesystem !")
+                 case e:FileNotFoundException => complete(INVALID_INPUT_ERR_MSG)
              
               }
-            }
            }
-          }
-        } ~ get {
-
-          pathPrefix(apiPrefix) {
-
-           path("/health") {
-              complete (StatusCodes.OK)
-           }
-          }
         }
+     }
 
+  /*
+   * Methods
+  */
   def main(args: Array[String]) {
 
     startService("localhost",8080)
 
     StdIn.readLine() // let it run until user presses return
+
+    stopService
   }
 
+  /** Starts the service.
+   *
+   *  @param host the service host URL
+   *  @param port the service port 
+   */
   def startService(host : String,port : Int) = {
 
     binding = Http().bindAndHandle(route, host, port)
     println(s"Server online...")
   }
 
+  /** Stops the service.
+   */
   def stopService() = {
 
     binding
@@ -93,6 +107,11 @@ object WebServer {
     println(s"Server offline...")
   }
 
+  /** Reads the data input from a file in the local filesystem.
+   *
+   *  @param filename the file path in the local filesystem
+   *  @return a list with all invitations
+   */
   def readInvitations(fileName : String) : List[Invitation] = {
 
      val buffer = Source.fromFile(fileName)
