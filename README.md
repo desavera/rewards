@@ -1,4 +1,4 @@
-# myrewards
+# rewards
 Social Networking Rewarding Engine
 
 ## Problem description
