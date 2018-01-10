@@ -4,7 +4,6 @@
  * author : Mário de Sá Vera
  */
 
-
 package com.rewards.web
 
 import akka.actor.ActorSystem

@@ -53,6 +53,8 @@ A single endpoint indicating the calculation function trigged pointing to a file
 
 You will need to install Scala 2.12 !
 
-### cd [PROJECT_DIR]
-### ./sbt assembly
-### scala -classpath target/scala-2.12/rewards-api-assembly-0.1.jar com.rewards.web.WebServer
+>cd [PROJECT_DIR]
+>./sbt assembly
+>scala -classpath target/scala-2.12/rewards-api-assembly-0.1.jar com.rewards.web.WebServer
+
+then go to http://localhost:8080/health on your browser and check the service health.
